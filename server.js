@@ -28,4 +28,7 @@ app.get('/roll', function (req, res) {
   });
 })
 
-app.listen(3000)
+var port = 3000;
+
+console.log('listening on port ' + port);
+app.listen(port)
