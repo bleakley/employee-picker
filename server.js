@@ -1,34 +1,40 @@
-var express = require('express')
 var htmlToJson = require("html-to-json")
-var app = express()
+var SlackBot = require('slackbots');
+var secrets = require("./secrets.json");
 
-app.get('/', function (req, res) {
-  res.send("<a href='roll'>Roll!</a>")
-})
+var recursionautList = [];
 
-app.get('/roll', function (req, res) {
-  htmlToJson.request('http://www.recursionpharma.com/team.html', {
-    'data': {
-      $container: '#741471631897133620-gallery',
-      'team': function ($t) {
-        htmlToJson.parse($t.html(), {
-          'employees': ['.galleryInnerImageHolder', function ($galleryInnerImageHolder) {
-            	return $galleryInnerImageHolder.find('a').attr('href');
-          }]
-        }, function (err, result) {
-          var employeeCount = result.employees.length;
-          console.log(employeeCount + ' employees');
-          console.log(result);
-          var randomEmployee = result.employees[Math.floor(Math.random()*employeeCount)];
-          console.log('randomly selected ' + randomEmployee)
-          res.redirect('http://www.recursionpharma.com' + randomEmployee);
-        });
-      }
+htmlToJson.request('http://www.recursionpharma.com/team.html', {
+  'data': {
+    $container: '#741471631897133620-gallery',
+    'team': function ($t) {
+      htmlToJson.parse($t.html(), {
+        'employees': ['.galleryInnerImageHolder', function ($galleryInnerImageHolder) {
+          	return $galleryInnerImageHolder.find('a').attr('href');
+        }]
+      }, function (err, result) {
+        recursionautList = result.employees;
+      });
     }
-  });
-})
+  }
+});
 
-var port = 3000;
+var bot = new SlackBot({
+    token: secrets.slackApiToken,
+    name: 'Employee Roller'
+});
 
-console.log('listening on port ' + port);
-app.listen(port)
+var params = {
+    as_user: true
+};
+
+bot.on('message', function(data) {
+    if(data.type == 'message' && data.user != 'U4ZED7AN7') {
+      bot.getUserById(data.user).then(function(u){
+        var randomEmployee = recursionautList[Math.floor(Math.random()*recursionautList.length)];
+        var url = 'http://www.recursionpharma.com' + randomEmployee;
+        console.log(u.name + ' requested employee, received ' + url);
+        bot.postMessageToUser(u.name, 'hi ' + u.name + ' your random employee is ' + url, params);
+      })
+    }
+});

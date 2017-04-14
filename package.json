@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.2",
-    "html-to-json": "^0.6.0"
+    "html-to-json": "^0.6.0",
+    "slackbots": "^1.0.2"
   }
 }
