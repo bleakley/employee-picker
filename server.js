@@ -6,7 +6,7 @@ var recursionautList = [];
 
 htmlToJson.request('http://www.recursionpharma.com/team.html', {
   'data': {
-    $container: '#741471631897133620-gallery',
+    $container: '#153152873426670938-gallery',
     'team': function ($t) {
       htmlToJson.parse($t.html(), {
         'employees': ['.galleryInnerImageHolder', function ($galleryInnerImageHolder) {
@@ -14,6 +14,13 @@ htmlToJson.request('http://www.recursionpharma.com/team.html', {
         }]
       }, function (err, result) {
         recursionautList = result.employees;
+        boardOfDirectorsElement = recursionautList.indexOf('/uploads/9/4/2/1/942150/slide61_orig.gif');
+        recursionautList = recursionautList.slice(0, boardOfDirectorsElement);
+        recursionautList = recursionautList.filter(x => {
+          return !x.startsWith('/uploads');
+        });
+        console.log(recursionautList);
+        console.log(recursionautList.length);
       });
     }
   }
