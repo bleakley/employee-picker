@@ -4,27 +4,33 @@ var secrets = require("./secrets.json");
 
 var recursionautList = [];
 
-htmlToJson.request('http://www.recursionpharma.com/team.html', {
-  'data': {
-    $container: '#153152873426670938-gallery',
-    'team': function ($t) {
-      htmlToJson.parse($t.html(), {
-        'employees': ['.galleryInnerImageHolder', function ($galleryInnerImageHolder) {
-          	return $galleryInnerImageHolder.find('a').attr('href');
-        }]
-      }, function (err, result) {
-        recursionautList = result.employees;
-        boardOfDirectorsElement = recursionautList.indexOf('/uploads/9/4/2/1/942150/slide61_orig.gif');
-        recursionautList = recursionautList.slice(0, boardOfDirectorsElement);
-        recursionautList = recursionautList.filter(x => {
-          return !x.startsWith('/uploads');
+
+function updateEmployeeList() {
+  htmlToJson.request('http://www.recursionpharma.com/team.html', {
+    'data': {
+      $container: '#153152873426670938-gallery',
+      'team': function ($t) {
+        htmlToJson.parse($t.html(), {
+          'employees': ['.galleryInnerImageHolder', function ($galleryInnerImageHolder) {
+            	return $galleryInnerImageHolder.find('a').attr('href');
+          }]
+        }, function (err, result) {
+          recursionautList = result.employees;
+          boardOfDirectorsElement = recursionautList.indexOf('/uploads/9/4/2/1/942150/slide61_orig.gif');
+          recursionautList = recursionautList.slice(0, boardOfDirectorsElement);
+          recursionautList = recursionautList.filter(x => {
+            return !x.startsWith('/uploads');
+          });
+          console.log(recursionautList);
+          console.log(recursionautList.length);
         });
-        console.log(recursionautList);
-        console.log(recursionautList.length);
-      });
+      }
     }
-  }
-});
+  });
+  setTimeout(updateEmployeeList, 1000*60*60*24);
+}
+
+updateEmployeeList();
 
 var bot = new SlackBot({
     token: secrets.slackApiToken,
