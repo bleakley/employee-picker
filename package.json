@@ -1,15 +1,15 @@
 {
   "name": "employee-picker",
   "version": "1.0.0",
-  "description": "Roll a random Recursionaut",
+  "description": "Roll a random employee",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Brian Bleakley <brianbleakley@gmail.com> (https://github.com/bleakley/)",
+  "license": "MIT",
   "dependencies": {
-    "html-to-json": "^0.6.0",
+    "request": "^2.81.0",
     "slackbots": "^1.0.2"
   }
 }
