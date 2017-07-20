@@ -38,8 +38,11 @@ bot.on('message', function(data) {
     if(data.type == 'message' && data.user != 'U4ZED7AN7') {
       bot.getUserById(data.user).then(function(u){
         var randomEmployee = employeeList[Math.floor(Math.random()*employeeList.length)];
-        console.log(u.name + ' requested employee, received ' + randomEmployee.displayName);
-        bot.postMessageToUser(u.name, `hi ${u.name} your random employee is ${randomEmployee.displayName}\n${randomEmployee.photoUrl}`, params);
+        var name = randomEmployee.displayName;
+        if(randomEmployee.preferredName)
+          name = randomEmployee.preferredName;
+        console.log(u.name + ' requested employee, received ' + name);
+        bot.postMessageToUser(u.name, `hi ${u.name} your random employee is ${name}\n${randomEmployee.photoUrl}`, params);
       })
     }
 });
